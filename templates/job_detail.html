@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="max-w-4xl mx-auto panel p-6">
+  <div class="flex items-start justify-between">
+    <div>
+      <h2 class="text-2xl font-extrabold mb-1">{{ job.title }}</h2>
+      <div class="text-sub">Company: {{ job.company_name }}</div>
+    </div>
+    <form method="post" action="{{ url_for('pickup_job', job_id=job.id) }}">
+      {% if job.status == 'open' %}
+        <button class="btn-acc px-4 py-2 rounded">Pick up task</button>
+      {% else %}
+        <button class="px-4 py-2 rounded bg-gray-700 text-gray-300" disabled>Unavailable</button>
+      {% endif %}
+    </form>
+  </div>
+  <div class="hline my-5"></div>
+  <div class="grid sm:grid-cols-3 gap-4">
+    <div class="metric">
+      <div class="text-sub text-sm">Upfront</div>
+      <div class="text-xl font-bold">£{{ '%.2f' % (job.upfront_gbp_pence/100) }}</div>
+    </div>
+    <div class="metric">
+      <div class="text-sub text-sm">Token Offering</div>
+      <div class="text-xl font-bold">{{ job.token_amount }}</div>
+    </div>
+    <div class="metric">
+      <div class="text-sub text-sm">Stake %</div>
+      <div class="text-xl font-bold">
+        {% if job.company_supply %}{{ ((job.token_amount / job.company_supply) * 100) | round(2) }}%{% else %}—{% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="hline my-5"></div>
+  <div>
+    <div class="text-sub text-sm mb-1">Description</div>
+    <p>{{ job.description or 'No description provided.' }}</p>
+  </div>
+</section>
+{% endblock %}

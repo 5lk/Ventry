@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel p-6">
+  <div class="flex items-center justify-between mb-3">
+    <h2 class="text-xl font-extrabold">Open Tasks</h2>
+    <a href="{{ url_for('browse_jobs') }}" class="btn-outline-acc px-3 py-1.5 rounded">Refresh</a>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full table-dark">
+      <thead>
+        <tr class="text-left text-sub">
+          <th class="py-2">Company</th>
+          <th class="py-2">Title</th>
+          <th class="py-2">Upfront</th>
+          <th class="py-2">Tokens</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in jobs %}
+        <tr class="border-t border-[rgba(34,48,72,0.6)]">
+          <td class="py-2">{{ j.company_name }}</td>
+          <td class="py-2">{{ j.title }}</td>
+          <td class="py-2">£{{ '%.2f' % (j.upfront_gbp_pence/100) }}</td>
+          <td class="py-2">{{ j.token_amount }}</td>
+          <td class="py-2">
+            <a class="btn-acc px-3 py-1.5 rounded" href="{{ url_for('view_job', job_id=j.id) }}">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

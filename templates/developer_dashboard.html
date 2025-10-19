@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-xl font-extrabold mb-4">Ventry — Developer</h2>
+
+<section class="grid lg:grid-cols-2 gap-6">
+  <div class="panel p-5">
+    <h3 class="font-semibold mb-3">Your Holdings</h3>
+    {% if holdings and holdings|length > 0 %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-dark">
+          <thead>
+            <tr class="text-left text-sub">
+              <th class="py-2">Company</th>
+              <th class="py-2">Tokens</th>
+              <th class="py-2">Price (GBP)</th>
+              <th class="py-2">Value (GBP)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in holdings %}
+            <tr class="border-t border-[rgba(34,48,72,0.6)]">
+              <td class="py-2">{{ h.company_name }}</td>
+              <td class="py-2">{{ h.tokens }}</td>
+              <td class="py-2">${{ '%.2f' % h.price_gbp }}</td>
+              <td class="py-2">${{ '%.2f' % h.value_gbp }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-sub">No holdings yet. Pick up a task to start earning tokens.</p>
+    {% endif %}
+  </div>
+
+  <div class="panel p-5">
+    <h3 class="font-semibold mb-3">Current Tasks</h3>
+    {% if my_current and my_current|length > 0 %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-dark">
+          <thead>
+            <tr class="text-left text-sub">
+              <th class="py-2">Company</th>
+              <th class="py-2">Title</th>
+              <th class="py-2">Upfront</th>
+              <th class="py-2">Tokens</th>
+              <th class="py-2">Status</th>
+              <th class="py-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for j in my_current %}
+            <tr class="border-t border-[rgba(34,48,72,0.6)]">
+              <td class="py-2">{{ j.company_name }}</td>
+              <td class="py-2">{{ j.title }}</td>
+              <td class="py-2">${{ '%.2f' % (j.upfront_gbp_pence/100) }}</td>
+              <td class="py-2">{{ j.token_amount }}</td>
+              <td class="py-2">{{ j.status }}</td>
+              <td class="py-2">
+                {% if j.status == 'picked' %}
+                  <form method="post" action="{{ url_for('complete_job', job_id=j.id) }}">
+                    <button class="px-3 py-1.5 rounded bg-emerald-500 text-black font-semibold">Mark Completed</button>
+                  </form>
+                {% else %}
+                  <span class="text-sub">Awaiting verification</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-sub">You have no current tasks. Explore open tasks below.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="panel p-5 mt-6">
+  <div class="flex items-center justify-between">
+    <h3 class="font-semibold">Open Tasks</h3>
+    <a href="{{ url_for('browse_jobs') }}" class="btn-outline-acc px-3 py-1.5 rounded">Refresh</a>
+  </div>
+  <div class="overflow-x-auto mt-3">
+    <table class="min-w-full table-dark">
+      <thead>
+        <tr class="text-left text-sub">
+          <th class="py-2">Company</th>
+          <th class="py-2">Title</th>
+          <th class="py-2">Upfront</th>
+          <th class="py-2">Tokens</th>
+          <th class="py-2">Stake %</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in open_jobs %}
+        <tr class="border-t border-[rgba(34,48,72,0.6)]">
+          <td class="py-2">{{ j.company_name }}</td>
+          <td class="py-2">{{ j.title }}</td>
+          <td class="py-2">${{ '%.2f' % (j.upfront_gbp_pence/100) }}</td>
+          <td class="py-2">{{ j.token_amount }}</td>
+          <td class="py-2">
+            {% if j.company_supply %}
+              {{ ((j.token_amount / j.company_supply) * 100) | round(2) }}%
+            {% else %}—{% endif %}
+          </td>
+          <td class="py-2">
+            <a class="btn-acc px-3 py-1.5 rounded" href="{{ url_for('view_job', job_id=j.id) }}">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

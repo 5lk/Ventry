@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="grid lg:grid-cols-2 gap-6">
+  <div class="panel p-6">
+    <h1 class="text-3xl font-extrabold mb-2">The first startup for startups.</h1>
+    <p class="text-sub mb-5">We aim to turn future success into present value. Workers can contribute and innovate on projects they're interested in, or see exploding in the future. Startups can utilise skilled, talented developers at a low cost, in exchange for equity. Our platform provides tokenization of equity, which allows startups or anyone without funding to expand and excel.</p>
+    <div class="grid sm:grid-cols-2 gap-3">
+      <div class="metric">
+        <div class="text-sm text-sub">Based on</div>
+        <div class="text-lg font-bold">Algorand</div>
+        <div class="text-xs text-sub mt-1">Token transfer + USD price</div>
+      </div>
+      <div class="metric">
+        <div class="text-sm text-sub">Built in</div>
+        <div class="text-lg font-bold">Python</div>
+        <div class="text-xs text-sub mt-1">With AlgoSDK</div>
+      </div>
+    </div>
+    <div class="hline my-6"></div>
+    <div class="flex gap-2">
+      <a href="{{ url_for('register') }}" class="btn-acc px-4 py-2 rounded">Get started</a>
+      <a href="{{ url_for('login') }}" class="btn-outline-acc px-4 py-2 rounded">Sign in</a>
+    </div>
+  </div>
+
+  <div class="panel p-6">
+    <h3 class="font-bold mb-3">How Ventry works</h3>
+    <div class="diagram">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="chip">Step 1</span>
+        <div class="font-semibold">Company creates a token & posts a task</div>
+      </div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="chip">Step 2</span>
+        <div class="font-semibold">Developer views, picks up, completes task</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="chip">Step 3</span>
+        <div class="font-semibold">Company verifies → Developer gets paid</div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

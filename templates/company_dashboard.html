@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-xl font-extrabold mb-4">Ventry — Company</h2>
+
+<section class="grid lg:grid-cols-2 gap-6">
+  <div class="panel p-5">
+    <h3 class="font-semibold mb-3">Company</h3>
+    {% if company and company.name %}
+      <div class="kv"><div class="k">Name</div><div class="v">{{ company.name }}</div></div>
+      <div class="kv"><div class="k">Token Unit</div><div class="v">{{ company.unit_name }}</div></div>
+      <div class="kv"><div class="k">Token ID</div><div class="v">{{ company.asset_id }}</div></div>
+      <div class="kv"><div class="k">Price App ID</div><div class="v">{{ company.app_id }}</div></div>
+      <div class="kv"><div class="k">Total Supply</div><div class="v">{{ company.supply }}</div></div>
+      <div class="kv"><div class="k">Equity (devs)</div><div class="v">{{ (company.equity_pct*100)|round(2) }}%</div></div>
+      <div class="kv"><div class="k">Valuation</div><div class="v">${{ '%.2f' % company.valuation_gbp }}</div></div>
+    {% else %}
+      <p class="text-sub mb-2">Complete setup before proceeding.</p>
+      <a class="btn-acc px-4 py-2 rounded" href="{{ url_for('company_setup') }}">Setup Company</a>
+    {% endif %}
+  </div>
+
+  <div class="panel p-5">
+    <h3 class="font-semibold mb-3">Token Price</h3>
+    {% if state and state.token_price is not none %}
+      <div class="kv"><div class="k">token_id</div><div class="v">{{ state.token_id }}</div></div>
+      <div class="kv"><div class="k">Price (scaled GBP)</div><div class="v">{{ state.token_price }}</div></div>
+      <div class="kv"><div class="k">Price (GBP)</div><div class="v">${{ '%.2f' % (state.token_price / SCALE_GBP) }}</div></div>
+    {% else %}
+      <p class="text-sub">Price state not available yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="panel p-5 mt-6">
+  <div class="flex items-center justify-between">
+    <h3 class="font-semibold">Tasks</h3>
+    {% if company and company.name %}
+      <a href="{{ url_for('new_job') }}" class="btn-acc px-3 py-1.5 rounded">New Task</a>
+    {% endif %}
+  </div>
+  <div class="overflow-x-auto mt-3">
+    <table class="min-w-full table-dark">
+      <thead>
+        <tr class="text-left text-sub">
+          <th class="py-2">Title</th>
+          <th class="py-2">Upfront (GBP)</th>
+          <th class="py-2">Tokens</th>
+          <th class="py-2">Stake %</th>
+          <th class="py-2">Status</th>
+          <th class="py-2">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in jobs %}
+        <tr class="border-t border-[rgba(34,48,72,0.6)]">
+          <td class="py-2">{{ j.title }}</td>
+          <td class="py-2">${{ '%.2f' % (j.upfront_gbp_pence/100) }}</td>
+          <td class="py-2">{{ j.token_amount }}</td>
+          <td class="py-2">
+            {% if company and company.supply %}
+              {{ ((j.token_amount / company.supply) * 100) | round(2) }}%
+            {% else %}—{% endif %}
+          </td>
+          <td class="py-2">{{ j.status }}</td>
+          <td class="py-2">
+            {% if j.status == 'awaiting_verification' %}
+              <form method="post" action="{{ url_for('verify_job', job_id=j.id) }}">
+                <button class="px-3 py-1.5 rounded bg-emerald-500 text-black font-semibold">Verify & Settle</button>
+              </form>
+            {% else %}
+              <span class="text-sub">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

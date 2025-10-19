@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Ventry</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind CSS + Flowbite -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bg1: '#0b0f14',
+            bg2: '#0f1520',
+            elev: '#121826',
+            line: '#223048',
+            txt: '#e8edf4',
+            sub: '#9aa6b2',
+            acc: '#58d6ff',
+            acc2: '#7aa8ff'
+          },
+          boxShadow: {
+            soft: '0 8px 24px rgba(0,0,0,0.25)',
+            inset: 'inset 0 1px 0 rgba(255,255,255,0.02)'
+          }
+        }
+      }
+    };
+  </script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.css"
+  />
+  <style>
+    body {
+      background: radial-gradient(1200px 800px at 15% -10%, #111a2a 0%, transparent 50%),
+        radial-gradient(900px 600px at 100% 0%, #0e1b2c 0%, transparent 45%), #0b0f14;
+      color: #e8edf4;
+    }
+
+    .glass {
+      background: linear-gradient(
+        180deg,
+        rgba(18, 24, 38, 0.75),
+        rgba(11, 15, 20, 0.75)
+      );
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(88, 214, 255, 0.08);
+    }
+
+    .panel {
+      border: 1px solid rgba(88, 214, 255, 0.08);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #0f1520, #0b0f14);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .metric {
+      border: 1px solid rgba(88, 214, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px;
+      background: linear-gradient(180deg, #0e1420, #0b1019);
+    }
+
+    .diagram {
+      border: 1px dashed rgba(122, 168, 255, 0.35);
+      border-radius: 14px;
+      padding: 16px;
+      background: linear-gradient(180deg, #0b121c, #0b0f14);
+    }
+
+    .hline {
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(88, 214, 255, 0.25),
+        transparent
+      );
+    }
+
+    .btn-acc {
+      background: linear-gradient(135deg, #58d6ff, #7aa8ff);
+      color: #0b0f14;
+      font-weight: 700;
+    }
+
+    .btn-acc:hover {
+      filter: brightness(1.06);
+    }
+
+    .btn-outline-acc {
+      border: 1px solid rgba(88, 214, 255, 0.35);
+      color: #bfeaff;
+    }
+
+    .btn-outline-acc:hover {
+      border-color: rgba(88, 214, 255, 0.6);
+      background: rgba(17, 24, 38, 0.4);
+    }
+
+    .kv {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(88, 214, 255, 0.15);
+    }
+
+    .kv:last-child {
+      border-bottom: 0;
+    }
+
+    .kv .k {
+      color: #9aa6b2;
+      font-weight: 500;
+    }
+
+    .kv .v {
+      color: #e8edf4;
+      font-weight: 600;
+    }
+
+    .chip {
+      border: 1px solid rgba(88, 214, 255, 0.25);
+      background: rgba(15, 21, 32, 0.6);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #bfeaff;
+    }
+
+    .table-dark th {
+      color: #cfe0f1;
+      font-weight: 600;
+    }
+
+    .table-dark td,
+    .table-dark th {
+      border-color: rgba(34, 48, 72, 0.6) !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="glass shadow-soft sticky top-0 z-40">
+    <nav class="container mx-auto flex items-center justify-between px-4 py-3">
+      <a href="{{ url_for('dashboard') }}" class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='icon.png') }}" alt="Ventry Logo" class="w-8 h-8 rounded" />
+        <div class="text-xl font-extrabold tracking-wide">Ventry</div>
+      </a>
+      <div class="flex items-center gap-2">
+        {% if session.get('user_id') %}
+        <a href="{{ url_for('dashboard') }}" class="btn-outline-acc px-3 py-1.5 rounded"
+          >Dashboard</a
+        >
+        <a href="{{ url_for('logout') }}" class="btn-acc px-3 py-1.5 rounded"
+          >Logout</a
+        >
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn-outline-acc px-3 py-1.5 rounded"
+          >Login</a
+        >
+        <a
+          href="{{ url_for('register') }}"
+          class="btn-acc px-3 py-1.5 rounded"
+          >Register</a
+        >
+        {% endif %}
+      </div>
+    </nav>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="container mx-auto px-4">
+      <div class="mt-2 mb-3 panel p-3 text-acc text-sm">{{ messages[0] }}</div>
+    </div>
+    {% endif %}
+    {% endwith %}
+  </header>
+
+  <main class="container mx-auto px-4 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.js"></script>
+</body>
+</html>
